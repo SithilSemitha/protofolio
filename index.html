@@ -238,6 +238,29 @@
             box-shadow: var(--glow-volt);
         }
 
+        .nav-cv-btn {
+            width: auto;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: var(--volt-dim);
+            color: var(--volt);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0 0.8rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-cv-btn:hover {
+            border-color: var(--volt);
+            box-shadow: var(--glow-volt);
+        }
+
         .hire-btn {
             font-family: 'Syne', sans-serif;
             font-size: 0.75rem;
@@ -272,7 +295,7 @@
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 380px;
-            gap: 5rem;
+            gap: 3rem;
             align-items: center;
         }
 
@@ -384,13 +407,14 @@
         .profile-card {
             position: relative;
             animation: fadeUp 0.7s 0.3s both;
+            text-align: center;
         }
 
         .profile-img-wrap {
             position: relative;
             width: 320px;
             height: 320px;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 0.8rem;
         }
         .profile-img-wrap::before {
             content: '';
@@ -428,20 +452,18 @@
         }
 
         .profile-badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            z-index: 3;
             background: var(--panel);
             border: 1px solid var(--border);
             padding: 0.5rem 0.9rem;
             border-radius: 30px;
             font-size: 0.72rem;
             color: var(--volt);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.4rem;
             backdrop-filter: blur(8px);
+            margin: 0.5rem auto;
+            width: fit-content;
         }
         .profile-badge .dot {
             width: 7px; height: 7px;
@@ -455,7 +477,9 @@
             display: flex;
             gap: 0.8rem;
             justify-content: center;
-            margin-top: 1.5rem;
+            align-items: center;
+            margin-top: 0.7rem;
+            flex-wrap: wrap;
         }
         .social-chip {
             display: flex;
@@ -1035,6 +1059,10 @@
             <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </button>
+            <a href="https://drive.google.com/file/d/153ME7PqdaAa3FITkp-ATv49hRbTHIeFZ/view?usp=sharing" target="_blank" class="nav-cv-btn" aria-label="View CV">
+                <i class="fas fa-file-pdf"></i>
+                <span>Download CV</span>
+            </a>
             <a href="#contact" class="hire-btn">Contact →</a>
         </div>
     </nav>
@@ -1068,10 +1096,10 @@
                          alt="Sithil Semitha"
                          class="profile-photo"
                          onerror="this.style.display='none'">
-                    <div class="profile-badge">
-                        <div class="dot"></div>
-                        Available for Internship
-                    </div>
+                </div>
+                <div class="profile-badge">
+                    <div class="dot"></div>
+                    Available for Internship
                 </div>
                 <div class="profile-social">
                     <a href="https://github.com/SithilSemitha" target="_blank" class="social-chip">
@@ -1452,6 +1480,11 @@
                 </a>
             </div>
             <div class="contact-links reveal reveal-delay-1">
+                <a href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" class="contact-link-item">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Download CV</span>
+                    <i class="fas fa-arrow-right arrow"></i>
+                </a>
                 <a href="mailto:sithilsemithad@gmail.com" class="contact-link-item">
                     <i class="fas fa-envelope"></i>
                     <span>sithilsemithad@gmail.com</span>
