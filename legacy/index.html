@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sithil Semitha — Software Engineer</title>
+    <title>Sithil Semitha â€” Software Engineer</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23050510'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' font-size='52' fill='%2300fff0' font-family='monospace'%3ESS%3C/text%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ── DESIGN TOKENS ── */
+        /* â”€â”€ DESIGN TOKENS â”€â”€ */
         :root {
             --ink: #050510;
             --surface: #090918;
@@ -43,7 +43,7 @@
             --muted: #6b7280;
         }
 
-        /* ── RESET ── */
+        /* â”€â”€ RESET â”€â”€ */
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; }
 
@@ -56,7 +56,7 @@
             cursor: none;
         }
 
-        /* ── CUSTOM CURSOR ── */
+        /* â”€â”€ CUSTOM CURSOR â”€â”€ */
         .cursor-dot {
             width: 6px; height: 6px;
             background: var(--volt);
@@ -87,7 +87,7 @@
             border-color: var(--spark);
         }
 
-        /* ── NOISE TEXTURE OVERLAY ── */
+        /* â”€â”€ NOISE TEXTURE OVERLAY â”€â”€ */
         body::before {
             content: '';
             position: fixed;
@@ -98,7 +98,7 @@
             opacity: 0.4;
         }
 
-        /* ── SCANLINE ── */
+        /* â”€â”€ SCANLINE â”€â”€ */
         body::after {
             content: '';
             position: fixed;
@@ -114,7 +114,7 @@
             z-index: 9998;
         }
 
-        /* ── ANIMATED BG ── */
+        /* â”€â”€ ANIMATED BG â”€â”€ */
         .bg-field {
             position: fixed;
             inset: 0;
@@ -162,7 +162,7 @@
             perspective: 800px;
         }
 
-        /* ── NAV ── */
+        /* â”€â”€ NAV â”€â”€ */
         nav {
             position: fixed;
             top: 0; width: 100%;
@@ -279,7 +279,7 @@
             transform: translateY(-1px);
         }
 
-        /* ── HERO ── */
+        /* â”€â”€ HERO â”€â”€ */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -540,7 +540,7 @@
             to { opacity:1; transform:translateY(0); }
         }
 
-        /* ── SECTION WRAPPER ── */
+        /* â”€â”€ SECTION WRAPPER â”€â”€ */
         .section-wrap {
             padding: 7rem 5%;
             position: relative;
@@ -587,7 +587,7 @@
             z-index: 1;
         }
 
-        /* ── ABOUT ── */
+        /* â”€â”€ ABOUT â”€â”€ */
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 420px;
@@ -648,7 +648,7 @@
             color: var(--muted);
         }
 
-        /* ── SKILLS ── */
+        /* â”€â”€ SKILLS â”€â”€ */
         .skills-group {
             margin-bottom: 3rem;
         }
@@ -696,7 +696,7 @@
         }
         .skill-pill i { font-size: 0.9rem; }
 
-        /* ── PROJECTS ── */
+        /* â”€â”€ PROJECTS â”€â”€ */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -806,7 +806,7 @@
             color: var(--volt);
         }
 
-        /* ── CERTS & POSTS ── */
+        /* â”€â”€ CERTS & POSTS â”€â”€ */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -918,7 +918,7 @@
             border-radius: 3px;
         }
 
-        /* ── CONTACT ── */
+        /* â”€â”€ CONTACT â”€â”€ */
         .contact-inner {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -968,7 +968,7 @@
         .contact-link-item .arrow { margin-left: auto; color: var(--muted); font-size: 0.8rem; transition: color 0.2s; }
         .contact-link-item:hover .arrow { color: var(--volt); }
 
-        /* ── FOOTER ── */
+        /* â”€â”€ FOOTER â”€â”€ */
         footer {
             position: relative;
             z-index: 1;
@@ -995,7 +995,7 @@
             animation: pulse 2s infinite;
         }
 
-        /* ── FADE-IN REVEAL ── */
+        /* â”€â”€ FADE-IN REVEAL â”€â”€ */
         .reveal {
             opacity: 0;
             transform: translateY(28px);
@@ -1009,12 +1009,12 @@
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
 
-        /* ── SCROLLBAR ── */
+        /* â”€â”€ SCROLLBAR â”€â”€ */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--ink); }
         ::-webkit-scrollbar-thumb { background: var(--volt); border-radius: 3px; }
 
-        /* ── RESPONSIVE ── */
+        /* â”€â”€ RESPONSIVE â”€â”€ */
         @media (max-width: 1024px) {
             .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
             .profile-card { order: -1; max-width: 360px; margin: 0 auto; }
@@ -1059,15 +1059,15 @@
             <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </button>
-            <a href="https://drive.google.com/file/d/153ME7PqdaAa3FITkp-ATv49hRbTHIeFZ/view?usp=sharing" target="_blank" class="nav-cv-btn" aria-label="View CV">
+            <a href="https://drive.google.com/file/d/1ls0TTTP1z27AsNgHDD1EcAv54W3tk1Ug/view?usp=sharing" target="_blank" class="nav-cv-btn" aria-label="View CV">
                 <i class="fas fa-file-pdf"></i>
                 <span>Download CV</span>
             </a>
-            <a href="#contact" class="hire-btn">Contact →</a>
+            <a href="#contact" class="hire-btn">Contact â†’</a>
         </div>
     </nav>
 
-    <!-- ── HERO ── -->
+    <!-- â”€â”€ HERO â”€â”€ -->
     <section class="hero" id="home">
         <div class="hero-inner">
             <div class="hero-left">
@@ -1081,7 +1081,7 @@
                 </p>
                 <p class="hero-desc">
                     Second-year Computer Science undergraduate building end-to-end solutions.
-                    Ranked <strong>top 3 in batch</strong> with a <strong>3.991 GPA</strong> —
+                    Ranked <strong>top 3 in batch</strong> with a <strong>3.991 GPA</strong> â€”
                     turning complex problems into elegant, production-ready code.
                 </p>
                 <div class="hero-cta">
@@ -1112,7 +1112,7 @@
                 <div class="stat-chips">
                     <div class="stat-chip">
                         <span class="stat-chip-val">3.991</span>
-                        <span class="stat-chip-lbl">GPA · Distinction</span>
+                        <span class="stat-chip-lbl">GPA Â· Distinction</span>
                     </div>
                     <div class="stat-chip">
                         <span class="stat-chip-val">TOP 3</span>
@@ -1133,16 +1133,16 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── ABOUT ── -->
+    <!-- â”€â”€ ABOUT â”€â”€ -->
     <div class="section-wrap" id="about">
         <div class="section-head reveal">
-            <div class="section-eyebrow">// 01 — About Me</div>
+            <div class="section-eyebrow">// 01 â€” About Me</div>
             <h2 class="section-title">Academic excellence<br><span>meets technical craft</span></h2>
         </div>
         <div class="about-grid">
             <div class="about-text reveal">
-                <p>I'm a dedicated software engineering student in my second year pursuing a <strong>BSc in Computer Science</strong>. My journey began with outstanding GCE O-Level results, and I've continued to excel — graduating first year with distinction and a 3.991 GPA, ranked in the <strong>top 3 of my batch</strong>.</p>
-                <p>As an aspiring full-stack developer, I'm passionate about building <strong>end-to-end solutions</strong> that tackle real-world problems. I work across the entire stack — from database design to polished front-end interfaces.</p>
+                <p>I'm a dedicated software engineering student in my second year pursuing a <strong>BSc in Computer Science</strong>. My journey began with outstanding GCE O-Level results, and I've continued to excel â€” graduating first year with distinction and a 3.991 GPA, ranked in the <strong>top 3 of my batch</strong>.</p>
+                <p>As an aspiring full-stack developer, I'm passionate about building <strong>end-to-end solutions</strong> that tackle real-world problems. I work across the entire stack â€” from database design to polished front-end interfaces.</p>
                 <p>I thrive on learning new technologies and translating complex requirements into clean, maintainable code. From microservice architectures to mobile apps, I approach every project with the same drive for quality.</p>
             </div>
             <div class="about-highlights reveal reveal-delay-1">
@@ -1150,28 +1150,28 @@
                     <div class="highlight-icon"><i class="fas fa-graduation-cap"></i></div>
                     <div class="highlight-meta">
                         <strong>BSc Computer Science</strong>
-                        <span>2nd Year · First Class Distinction</span>
+                        <span>2nd Year Â· First Class Distinction</span>
                     </div>
                 </div>
                 <div class="highlight-item">
                     <div class="highlight-icon"><i class="fas fa-trophy"></i></div>
                     <div class="highlight-meta">
                         <strong>Top 3 in Batch</strong>
-                        <span>3.991 GPA — Academic Excellence</span>
+                        <span>3.991 GPA â€” Academic Excellence</span>
                     </div>
                 </div>
                 <div class="highlight-item">
                     <div class="highlight-icon"><i class="fas fa-award"></i></div>
                     <div class="highlight-meta">
                         <strong>Best Project Award</strong>
-                        <span>TechSpace · Academic Year 2023/24</span>
+                        <span>TechSpace Â· Academic Year 2023/24</span>
                     </div>
                 </div>
                 <div class="highlight-item">
                     <div class="highlight-icon"><i class="fas fa-cloud"></i></div>
                     <div class="highlight-meta">
                         <strong>Cloud & AI Certified</strong>
-                        <span>Oracle OCI · Microsoft Azure · Cisco</span>
+                        <span>Oracle OCI Â· Microsoft Azure Â· Cisco</span>
                     </div>
                 </div>
                 <div class="highlight-item">
@@ -1187,10 +1187,10 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── POSTS ── -->
+    <!-- â”€â”€ POSTS â”€â”€ -->
     <div class="section-wrap" id="posts">
         <div class="section-head reveal">
-            <div class="section-eyebrow">// 02 — Recent Activity</div>
+            <div class="section-eyebrow">// 02 â€” Recent Activity</div>
             <h2 class="section-title">Latest <span>milestones</span></h2>
         </div>
         <div class="two-col">
@@ -1200,7 +1200,7 @@
                     <span class="post-cat">Achievement</span>
                 </div>
                 <h4>Oracle Cloud Infrastructure 2025 Certified Foundations Associate</h4>
-                <p>Completed OCI 2025 Foundations certification — demonstrating expertise in cloud computing fundamentals and Oracle's cloud platform architecture.</p>
+                <p>Completed OCI 2025 Foundations certification â€” demonstrating expertise in cloud computing fundamentals and Oracle's cloud platform architecture.</p>
                 <div class="post-tags">
                     <span class="post-tag">Cloud</span>
                     <span class="post-tag">Oracle</span>
@@ -1212,7 +1212,7 @@
                     <span class="post-date"><i class="far fa-calendar"></i> Jan 2025</span>
                     <span class="post-cat">Learning</span>
                 </div>
-                <h4>Build Your Own AI Chatbot with Azure AI Foundry — Microsoft</h4>
+                <h4>Build Your Own AI Chatbot with Azure AI Foundry â€” Microsoft</h4>
                 <p>Gained hands-on experience building AI-powered chatbots using Microsoft Azure's AI services, exploring real-world NLP deployment patterns.</p>
                 <div class="post-tags">
                     <span class="post-tag">AI</span>
@@ -1225,7 +1225,7 @@
                     <span class="post-date"><i class="far fa-calendar"></i> Jan 2025</span>
                     <span class="post-cat">Certification</span>
                 </div>
-                <h4>Introduction to Cybersecurity — Cisco</h4>
+                <h4>Introduction to Cybersecurity â€” Cisco</h4>
                 <p>Expanded knowledge in network security, threat detection strategies, and cybersecurity best practices through Cisco's official curriculum.</p>
                 <div class="post-tags">
                     <span class="post-tag">Cybersecurity</span>
@@ -1239,7 +1239,7 @@
                     <span class="post-cat">Achievement</span>
                 </div>
                 <h4>Ranked Top 3 in Batch with 3.991 GPA</h4>
-                <p>Achieved top 3 ranking with distinction in first year — a testament to consistent dedication, discipline, and a drive for academic and technical excellence.</p>
+                <p>Achieved top 3 ranking with distinction in first year â€” a testament to consistent dedication, discipline, and a drive for academic and technical excellence.</p>
                 <div class="post-tags">
                     <span class="post-tag">Academic</span>
                     <span class="post-tag">Excellence</span>
@@ -1251,10 +1251,10 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── SKILLS ── -->
+    <!-- â”€â”€ SKILLS â”€â”€ -->
     <div class="section-wrap" id="skills">
         <div class="section-head reveal">
-            <div class="section-eyebrow">// 03 — Technical Skills</div>
+            <div class="section-eyebrow">// 03 â€” Technical Skills</div>
             <h2 class="section-title">Tools I <span>build with</span></h2>
         </div>
 
@@ -1307,10 +1307,10 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── CERTIFICATIONS ── -->
+    <!-- â”€â”€ CERTIFICATIONS â”€â”€ -->
     <div class="section-wrap" id="certifications">
         <div class="section-head reveal">
-            <div class="section-eyebrow">// 04 — Certifications</div>
+            <div class="section-eyebrow">// 04 â€” Certifications</div>
             <h2 class="section-title">Credentials &amp; <span>recognition</span></h2>
         </div>
         <div class="two-col">
@@ -1318,7 +1318,7 @@
                 <div class="cert-icon-wrap"><i class="fas fa-cloud"></i></div>
                 <div class="cert-body">
                     <strong>Oracle Cloud Infrastructure 2025 Certified Foundations Associate</strong>
-                    <div class="cert-org">Oracle · 2025</div>
+                    <div class="cert-org">Oracle Â· 2025</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1326,7 +1326,7 @@
                 <div class="cert-icon-wrap"><i class="fab fa-microsoft"></i></div>
                 <div class="cert-body">
                     <strong>Build Your Own AI Chatbot with Azure AI Foundry</strong>
-                    <div class="cert-org">Microsoft · 2025</div>
+                    <div class="cert-org">Microsoft Â· 2025</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1334,7 +1334,7 @@
                 <div class="cert-icon-wrap"><i class="fas fa-shield-alt"></i></div>
                 <div class="cert-body">
                     <strong>Introduction to Cybersecurity</strong>
-                    <div class="cert-org">Cisco · 2025</div>
+                    <div class="cert-org">Cisco Â· 2025</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1342,7 +1342,7 @@
                 <div class="cert-icon-wrap"><i class="fas fa-layer-group"></i></div>
                 <div class="cert-body">
                     <strong>Full Stack Web Development</strong>
-                    <div class="cert-org">Online Platform · 2024–Present</div>
+                    <div class="cert-org">Online Platform Â· 2024â€“Present</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1350,7 +1350,7 @@
                 <div class="cert-icon-wrap"><i class="fab fa-react"></i></div>
                 <div class="cert-body">
                     <strong>React Development Certification</strong>
-                    <div class="cert-org">Online Course · 2024</div>
+                    <div class="cert-org">Online Course Â· 2024</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1358,7 +1358,7 @@
                 <div class="cert-icon-wrap"><i class="fab fa-node-js"></i></div>
                 <div class="cert-body">
                     <strong>Node.js Backend Development</strong>
-                    <div class="cert-org">Online Platform · 2024</div>
+                    <div class="cert-org">Online Platform Â· 2024</div>
                     <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
@@ -1367,10 +1367,10 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── PROJECTS ── -->
+    <!-- â”€â”€ PROJECTS â”€â”€ -->
     <div class="section-wrap" id="projects">
         <div class="section-head reveal">
-            <div class="section-eyebrow">// 05 — Projects</div>
+            <div class="section-eyebrow">// 05 â€” Projects</div>
             <h2 class="section-title">Things I've <span>built</span></h2>
         </div>
         <div class="projects-grid">
@@ -1400,7 +1400,7 @@
             <div class="project-card reveal reveal-delay-1">
                 <div class="project-number">002 / 004</div>
                 <span class="project-tag tag-mobile"><i class="fas fa-mobile-alt"></i> Mobile App</span>
-                <h3>Pizza Mania — Smart Food Ordering</h3>
+                <h3>Pizza Mania â€” Smart Food Ordering</h3>
                 <p>Feature-rich Android pizza ordering app with real-time ordering, smart location detection via Google Maps, secure Stripe payments, and a comprehensive admin dashboard for order and inventory management.</p>
                 <div class="tech-row">
                     <span class="tech-chip">Android</span>
@@ -1422,7 +1422,7 @@
             <div class="project-card reveal">
                 <div class="project-number">003 / 004</div>
                 <span class="project-tag tag-micro"><i class="fas fa-cubes"></i> Microservices</span>
-                <h3>FOS ME — Food Ordering System</h3>
+                <h3>FOS ME â€” Food Ordering System</h3>
                 <p>Scalable, modular food ordering platform built on independent microservices. Handles auth, menu management, order processing, and delivery tracking through an API Gateway with Next.js frontend.</p>
                 <div class="tech-row">
                     <span class="tech-chip">Spring Boot</span>
@@ -1444,8 +1444,8 @@
             <div class="project-card reveal reveal-delay-1">
                 <div class="project-number">004 / 004</div>
                 <span class="project-tag tag-featured"><i class="fas fa-star"></i> Best Project Award</span>
-                <h3>TechSpace — Apparel Export Management System</h3>
-                <p>Large-scale ERP for a clothing manufacturer — covering raw material procurement, production, HR, finance, and international client sales. Awarded <strong>Best Project of the Academic Year</strong> for its scale and technical depth.</p>
+                <h3>TechSpace â€” Apparel Export Management System</h3>
+                <p>Large-scale ERP for a clothing manufacturer â€” covering raw material procurement, production, HR, finance, and international client sales. Awarded <strong>Best Project of the Academic Year</strong> for its scale and technical depth.</p>
                 <div class="tech-row">
                     <span class="tech-chip">PHP</span>
                     <span class="tech-chip">MySQL</span>
@@ -1468,19 +1468,19 @@
 
     <div class="section-divider"></div>
 
-    <!-- ── CONTACT ── -->
+    <!-- â”€â”€ CONTACT â”€â”€ -->
     <div class="section-wrap" id="contact">
         <div class="contact-inner">
             <div class="contact-text reveal">
-                <div class="section-eyebrow">// 06 — Contact</div>
+                <div class="section-eyebrow">// 06 â€” Contact</div>
                 <h2>Let's build<br><span>something great</span></h2>
-                <p>I'm always open to discussing new opportunities, internships, collaborations, or just connecting with fellow builders. Drop me a message — I reply fast.</p>
+                <p>I'm always open to discussing new opportunities, internships, collaborations, or just connecting with fellow builders. Drop me a message â€” I reply fast.</p>
                 <a href="mailto:sithilsemithad@gmail.com" class="btn-volt filled" style="display:inline-flex; width: fit-content;">
                     Send Email <i class="fas fa-paper-plane"></i>
                 </a>
             </div>
             <div class="contact-links reveal reveal-delay-1">
-                <a href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" class="contact-link-item">
+                <a href="https://drive.google.com/file/d/1ls0TTTP1z27AsNgHDD1EcAv54W3tk1Ug/view?usp=sharing" target="_blank" class="contact-link-item">
                     <i class="fas fa-file-pdf"></i>
                     <span>Download CV</span>
                     <i class="fas fa-arrow-right arrow"></i>
@@ -1510,12 +1510,12 @@
     </div>
 
     <footer>
-        <p>© 2026 Sithil Semitha. Designed with intention.</p>
+        <p>Â© 2026 Sithil Semitha. Designed with intention.</p>
         <div class="footer-volt">Powered up &amp; ready</div>
     </footer>
 
     <script>
-        /* ── CURSOR ── */
+        /* â”€â”€ CURSOR â”€â”€ */
         const dot = document.getElementById('cursorDot');
         const ring = document.getElementById('cursorRing');
         let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
@@ -1540,7 +1540,7 @@
             el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
         });
 
-        /* ── SCROLL REVEAL ── */
+        /* â”€â”€ SCROLL REVEAL â”€â”€ */
         const observer = new IntersectionObserver(entries => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
@@ -1552,7 +1552,7 @@
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        /* ── NAV ACTIVE ── */
+        /* â”€â”€ NAV ACTIVE â”€â”€ */
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('[id]');
             const navLinks = document.querySelectorAll('.nav-links a');
@@ -1566,7 +1566,7 @@
             });
         });
 
-        /* ── SMOOTH SCROLL ── */
+        /* â”€â”€ SMOOTH SCROLL â”€â”€ */
         document.querySelectorAll('a[href^="#"]').forEach(a => {
             a.addEventListener('click', e => {
                 const target = document.querySelector(a.getAttribute('href'));
@@ -1574,7 +1574,7 @@
             });
         });
 
-        /* ── THEME TOGGLE ── */
+        /* â”€â”€ THEME TOGGLE â”€â”€ */
         const html = document.documentElement;
         const toggle = document.getElementById('themeToggle');
         const icon   = document.getElementById('themeIcon');

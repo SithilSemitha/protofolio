@@ -3,7 +3,7 @@ export const site = {
   name: "Sithil Semitha",
   shortName: "Sithil",
   logo: "SITHIL.ME",
-  title: "Sithil Semitha — Software Engineer & AI Builder",
+  title: "Sithil Semitha â€” Software Engineer & AI Builder",
   description:
     "Portfolio of Sithil Semitha, a Computer Science undergraduate specializing in Applied AI, software engineering, full-stack development, and intelligent systems.",
   url: "https://www.sithil.me/",
@@ -17,8 +17,8 @@ export const site = {
   githubHandle: "SithilSemitha",
   linkedin: "https://www.linkedin.com/in/sithil-semitha/",
   instagram: "https://www.instagram.com/semithaaaaa/",
-  // NOTE: reused from the previous site — replace with a locally hosted PDF when available.
-  cvUrl: "https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing",
+  // NOTE: reused from the previous site â€” replace with a locally hosted PDF when available.
+  cvUrl: "https://drive.google.com/file/d/1ls0TTTP1z27AsNgHDD1EcAv54W3tk1Ug/view?usp=sharing",
   availability: "Available for opportunities",
   roles: ["Software Engineer", "AI Engineer", "Full-Stack Developer", "CS Undergraduate"],
   nav: [
