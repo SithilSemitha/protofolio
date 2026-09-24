@@ -1,1593 +1,633 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sithil Semitha — Software Engineer</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23050510'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' font-size='52' fill='%2300fff0' font-family='monospace'%3ESS%3C/text%3E%3C/svg%3E">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        /* ── DESIGN TOKENS ── */
-        :root {
-            --ink: #050510;
-            --surface: #090918;
-            --panel: #0d0d22;
-            --border: rgba(0,255,240,0.12);
-            --border-hot: rgba(0,255,240,0.5);
-
-            --volt: #00fff0;         /* electric teal */
-            --volt-dim: rgba(0,255,240,0.15);
-            --charge: #7b2fff;      /* deep violet */
-            --spark: #ff2d78;       /* hot pink accent */
-            --amber: #ffb300;       /* warning gold */
-
-            --text: #dde4f0;
-            --muted: #5a6480;
-
-            --glow-volt: 0 0 20px rgba(0,255,240,0.6), 0 0 60px rgba(0,255,240,0.2);
-            --glow-charge: 0 0 20px rgba(123,47,255,0.6);
-        }
-
-        [data-theme="light"] {
-            --ink: #f0f2fa;
-            --surface: #ffffff;
-            --panel: #f5f7ff;
-            --border: rgba(0,100,200,0.15);
-            --border-hot: rgba(0,100,200,0.5);
-            --volt: #0057ff;
-            --volt-dim: rgba(0,87,255,0.1);
-            --charge: #6200ea;
-            --spark: #d50032;
-            --text: #0a0a1a;
-            --muted: #6b7280;
-        }
-
-        /* ── RESET ── */
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-        html { scroll-behavior:smooth; }
-
-        body {
-            font-family: 'Fira Code', monospace;
-            background: var(--ink);
-            color: var(--text);
-            overflow-x: hidden;
-            line-height: 1.7;
-            cursor: none;
-        }
-
-        /* ── CUSTOM CURSOR ── */
-        .cursor-dot {
-            width: 6px; height: 6px;
-            background: var(--volt);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 99999;
-            transform: translate(-50%,-50%);
-            transition: transform 0.1s;
-            box-shadow: var(--glow-volt);
-        }
-        .cursor-ring {
-            width: 30px; height: 30px;
-            border: 1px solid var(--volt);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 99998;
-            transform: translate(-50%,-50%);
-            transition: transform 0.15s ease, width 0.2s, height 0.2s, opacity 0.2s;
-            opacity: 0.6;
-        }
-        .cursor-ring.hovered {
-            width: 50px; height: 50px;
-            opacity: 1;
-            border-color: var(--spark);
-        }
-
-        /* ── NOISE TEXTURE OVERLAY ── */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.4;
-        }
-
-        /* ── SCANLINE ── */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,255,240,0.015) 2px,
-                rgba(0,255,240,0.015) 4px
-            );
-            pointer-events: none;
-            z-index: 9998;
-        }
-
-        /* ── ANIMATED BG ── */
-        .bg-field {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .bg-field::before {
-            content: '';
-            position: absolute;
-            width: 140vmax; height: 140vmax;
-            top: -40vmax; left: -40vmax;
-            background: conic-gradient(
-                from 0deg at 30% 40%,
-                transparent 0deg,
-                rgba(0,255,240,0.04) 60deg,
-                transparent 120deg,
-                rgba(123,47,255,0.06) 180deg,
-                transparent 240deg,
-                rgba(255,45,120,0.03) 300deg,
-                transparent 360deg
-            );
-            animation: spinBg 40s linear infinite;
-        }
-        @keyframes spinBg { to { transform: rotate(360deg); } }
-
-        .bg-field::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 80% 50% at 10% 50%, rgba(0,255,240,0.07) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 60% at 90% 20%, rgba(123,47,255,0.09) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 50% at 50% 90%, rgba(255,45,120,0.05) 0%, transparent 60%);
-        }
-
-        /* Grid lines */
-        .grid-field {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background-image:
-                linear-gradient(rgba(0,255,240,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,240,0.04) 1px, transparent 1px);
-            background-size: 80px 80px;
-            perspective: 800px;
-        }
-
-        /* ── NAV ── */
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            z-index: 1000;
-            padding: 0 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px;
-            background: rgba(5,5,16,0.7);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            animation: slideDown 0.6s ease both;
-        }
-        @keyframes slideDown { from { transform:translateY(-100%); opacity:0; } }
-
-        .nav-logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: var(--volt);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .nav-logo .bracket { color: var(--muted); font-size: 1rem; }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2.5rem;
-        }
-        .nav-links a {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.78rem;
-            color: var(--muted);
-            text-decoration: none;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            position: relative;
-            transition: color 0.2s;
-        }
-        .nav-links a::before {
-            content: attr(data-num);
-            position: absolute;
-            top: -14px;
-            left: 0;
-            font-size: 0.6rem;
-            color: var(--volt);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .nav-links a:hover { color: var(--volt); }
-        .nav-links a:hover::before { opacity: 1; }
-
-        .nav-right { display: flex; align-items: center; gap: 1rem; }
-
-        .theme-btn {
-            width: 36px; height: 36px;
-            border: 1px solid var(--border);
-            background: var(--volt-dim);
-            color: var(--volt);
-            border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .theme-btn:hover {
-            border-color: var(--volt);
-            box-shadow: var(--glow-volt);
-        }
-
-        .nav-cv-btn {
-            width: auto;
-            height: 36px;
-            border: 1px solid var(--border);
-            background: var(--volt-dim);
-            color: var(--volt);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0 0.8rem;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .nav-cv-btn:hover {
-            border-color: var(--volt);
-            box-shadow: var(--glow-volt);
-        }
-
-        .hire-btn {
-            font-family: 'Syne', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: var(--ink);
-            background: var(--volt);
-            padding: 0.5rem 1.2rem;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .hire-btn:hover {
-            box-shadow: var(--glow-volt);
-            transform: translateY(-1px);
-        }
-
-        /* ── HERO ── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 0 5%;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-inner {
-            max-width: 1300px;
-            margin: 0 auto;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .hero-label {
-            font-size: 0.72rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--volt);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: fadeUp 0.7s 0.1s both;
-        }
-        .hero-label::before {
-            content: '';
-            width: 40px; height: 1px;
-            background: var(--volt);
-            box-shadow: 0 0 8px var(--volt);
-        }
-
-        .hero-name {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(3.5rem, 8vw, 6.5rem);
-            font-weight: 800;
-            line-height: 0.92;
-            letter-spacing: -3px;
-            margin-bottom: 1.5rem;
-            animation: fadeUp 0.7s 0.2s both;
-        }
-
-        .hero-name .line-1 { display: block; color: var(--text); }
-        .hero-name .line-2 {
-            display: block;
-            color: transparent;
-            -webkit-text-stroke: 1.5px var(--volt);
-            position: relative;
-        }
-        .hero-name .line-2::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            color: var(--volt);
-            opacity: 0;
-            filter: blur(12px);
-            animation: flicker 4s 2s infinite;
-        }
-        @keyframes flicker {
-            0%,95%,100% { opacity:0; }
-            96%,99% { opacity:0.7; }
-        }
-
-        .hero-role {
-            font-size: 1.1rem;
-            color: var(--muted);
-            margin-bottom: 1.5rem;
-            animation: fadeUp 0.7s 0.3s both;
-        }
-        .hero-role span { color: var(--charge); }
-
-        .hero-desc {
-            font-size: 0.95rem;
-            color: var(--muted);
-            max-width: 540px;
-            margin-bottom: 2.5rem;
-            line-height: 1.9;
-            animation: fadeUp 0.7s 0.4s both;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            animation: fadeUp 0.7s 0.5s both;
-        }
-
-        .btn-volt {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 0.82rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 0.9rem 2rem;
-            border-radius: 4px;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-volt.filled {
-            background: var(--volt);
-            color: var(--ink);
-        }
-        .btn-volt.filled:hover {
-            box-shadow: var(--glow-volt);
-            transform: translateY(-2px);
-        }
-        .btn-volt.outline {
-            border: 1px solid var(--border-hot);
-            color: var(--volt);
-        }
-        .btn-volt.outline:hover {
-            background: var(--volt-dim);
-            box-shadow: var(--glow-volt);
-        }
-
-        /* Profile card */
-        .profile-card {
-            position: relative;
-            animation: fadeUp 0.7s 0.3s both;
-            text-align: center;
-        }
-
-        .profile-img-wrap {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto 0.8rem;
-        }
-        .profile-img-wrap::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            background: conic-gradient(var(--volt), var(--charge), var(--spark), var(--volt));
-            animation: rotateBorder 4s linear infinite;
-            z-index: 0;
-        }
-        @keyframes rotateBorder { to { transform: rotate(360deg); } }
-
-        .profile-img-wrap::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: var(--ink);
-            margin: 3px;
-            z-index: 1;
-        }
-
-        .profile-photo {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 3px;
-            width: calc(100% - 6px);
-            height: calc(100% - 6px);
-            top: 3px;
-            left: 3px;
-        }
-
-        .profile-badge {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 0.5rem 0.9rem;
-            border-radius: 30px;
-            font-size: 0.72rem;
-            color: var(--volt);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            backdrop-filter: blur(8px);
-            margin: 0.5rem auto;
-            width: fit-content;
-        }
-        .profile-badge .dot {
-            width: 7px; height: 7px;
-            background: #00ff88;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-
-        .profile-social {
-            display: flex;
-            gap: 0.8rem;
-            justify-content: center;
-            align-items: center;
-            margin-top: 0.7rem;
-            flex-wrap: wrap;
-        }
-        .social-chip {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.55rem 1.1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            text-decoration: none;
-            color: var(--muted);
-            font-size: 0.78rem;
-            transition: all 0.2s;
-            background: var(--panel);
-        }
-        .social-chip:hover {
-            border-color: var(--volt);
-            color: var(--volt);
-            background: var(--volt-dim);
-        }
-
-        /* Floating stat chips */
-        .stat-chips {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.7rem;
-            margin-top: 1.5rem;
-        }
-        .stat-chip {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .stat-chip:hover {
-            border-color: var(--volt);
-            box-shadow: 0 0 20px rgba(0,255,240,0.1);
-        }
-        .stat-chip-val {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--volt);
-            display: block;
-            line-height: 1;
-        }
-        .stat-chip-lbl {
-            font-size: 0.68rem;
-            color: var(--muted);
-            letter-spacing: 0.5px;
-            margin-top: 0.4rem;
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from { opacity:0; transform:translateY(24px); }
-            to { opacity:1; transform:translateY(0); }
-        }
-
-        /* ── SECTION WRAPPER ── */
-        .section-wrap {
-            padding: 7rem 5%;
-            position: relative;
-            z-index: 1;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .section-head {
-            margin-bottom: 4rem;
-        }
-        .section-eyebrow {
-            font-size: 0.68rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--volt);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
-        }
-        .section-eyebrow::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, var(--volt), transparent);
-            max-width: 200px;
-        }
-        .section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(2rem, 4vw, 3.2rem);
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -1.5px;
-            color: var(--text);
-        }
-        .section-title span { color: var(--volt); }
-
-        /* Divider line between big sections */
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ── ABOUT ── */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 420px;
-            gap: 5rem;
-            align-items: start;
-        }
-
-        .about-text p {
-            font-size: 0.95rem;
-            color: var(--muted);
-            margin-bottom: 1.3rem;
-            line-height: 1.95;
-        }
-        .about-text p strong {
-            color: var(--text);
-            font-weight: 500;
-        }
-
-        .about-highlights {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .highlight-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.2rem;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .highlight-item:hover {
-            border-color: var(--volt);
-            transform: translateX(4px);
-        }
-        .highlight-icon {
-            width: 42px; height: 42px;
-            border-radius: 8px;
-            background: var(--volt-dim);
-            border: 1px solid var(--border-hot);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--volt);
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-        .highlight-meta strong {
-            display: block;
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-        }
-        .highlight-meta span {
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
-
-        /* ── SKILLS ── */
-        .skills-group {
-            margin-bottom: 3rem;
-        }
-        .skills-group-title {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 1.2rem;
-            padding-left: 1rem;
-            border-left: 2px solid var(--volt);
-        }
-        .skills-flex {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-        }
-        .skill-pill {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.6rem 1.1rem;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.82rem;
-            color: var(--text);
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .skill-pill::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,240,0.1), transparent);
-            transition: left 0.4s;
-        }
-        .skill-pill:hover::before { left: 100%; }
-        .skill-pill:hover {
-            border-color: var(--volt);
-            color: var(--volt);
-            box-shadow: 0 0 16px rgba(0,255,240,0.1);
-        }
-        .skill-pill i { font-size: 0.9rem; }
-
-        /* ── PROJECTS ── */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        .project-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 3px; height: 0;
-            background: linear-gradient(180deg, var(--volt), var(--charge));
-            transition: height 0.3s;
-        }
-        .project-card:hover::before { height: 100%; }
-        .project-card:hover {
-            border-color: rgba(0,255,240,0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(0,255,240,0.08);
-        }
-
-        .project-number {
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            color: var(--muted);
-            margin-bottom: 1rem;
-            font-family: 'Fira Code', monospace;
-        }
-        .project-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .tag-micro { background: rgba(0,255,240,0.12); color: var(--volt); border: 1px solid rgba(0,255,240,0.3); }
-        .tag-mobile { background: rgba(123,47,255,0.15); color: #a580ff; border: 1px solid rgba(123,47,255,0.3); }
-        .tag-full { background: rgba(255,45,120,0.12); color: var(--spark); border: 1px solid rgba(255,45,120,0.3); }
-        .tag-featured { background: rgba(255,179,0,0.12); color: var(--amber); border: 1px solid rgba(255,179,0,0.3); }
-
-        .project-card h3 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text);
-            margin-bottom: 0.8rem;
-            line-height: 1.3;
-        }
-        .project-card p {
-            font-size: 0.82rem;
-            color: var(--muted);
-            line-height: 1.8;
-            flex: 1;
-            margin-bottom: 1.5rem;
-        }
-
-        .tech-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-bottom: 1.5rem;
-        }
-        .tech-chip {
-            padding: 0.2rem 0.6rem;
-            background: rgba(0,255,240,0.06);
-            border: 1px solid rgba(0,255,240,0.15);
-            color: var(--volt);
-            font-size: 0.68rem;
-            border-radius: 4px;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 0.7rem;
-        }
-        .link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.45rem 0.9rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            text-decoration: none;
-            color: var(--muted);
-            font-size: 0.72rem;
-            transition: all 0.2s;
-            background: var(--surface);
-        }
-        .link-btn:hover {
-            border-color: var(--volt);
-            color: var(--volt);
-        }
-
-        /* ── CERTS & POSTS ── */
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
-        }
-
-        .cert-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: all 0.2s;
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-        }
-        .cert-card:hover {
-            border-color: var(--volt);
-            box-shadow: 0 0 20px rgba(0,255,240,0.08);
-        }
-        .cert-icon-wrap {
-            width: 42px; height: 42px;
-            border-radius: 8px;
-            background: var(--volt-dim);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--volt);
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            border: 1px solid rgba(0,255,240,0.2);
-        }
-        .cert-body strong {
-            display: block;
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 0.88rem;
-            color: var(--text);
-            margin-bottom: 0.25rem;
-            line-height: 1.3;
-        }
-        .cert-body .cert-org {
-            font-size: 0.72rem;
-            color: var(--charge);
-            margin-bottom: 0.6rem;
-        }
-        .cert-body a {
-            font-size: 0.7rem;
-            color: var(--volt);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .cert-body a:hover { opacity: 1; }
-
-        /* Posts */
-        .post-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-        .post-card:hover {
-            border-color: var(--charge);
-            box-shadow: 0 0 20px rgba(123,47,255,0.08);
-        }
-        .post-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.9rem;
-        }
-        .post-date { font-size: 0.68rem; color: var(--muted); }
-        .post-cat {
-            font-size: 0.62rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            background: rgba(123,47,255,0.15);
-            color: #a580ff;
-            border: 1px solid rgba(123,47,255,0.3);
-        }
-        .post-card h4 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-            margin-bottom: 0.6rem;
-            line-height: 1.3;
-        }
-        .post-card p {
-            font-size: 0.8rem;
-            color: var(--muted);
-            line-height: 1.75;
-            flex: 1;
-            margin-bottom: 1rem;
-        }
-        .post-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-        .post-tag {
-            font-size: 0.65rem;
-            color: var(--muted);
-            padding: 0.15rem 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 3px;
-        }
-
-        /* ── CONTACT ── */
-        .contact-inner {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5rem;
-            align-items: center;
-        }
-
-        .contact-text h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 1rem;
-            line-height: 1.1;
-        }
-        .contact-text h2 span { color: var(--volt); }
-        .contact-text p {
-            font-size: 0.9rem;
-            color: var(--muted);
-            line-height: 1.9;
-            margin-bottom: 2rem;
-        }
-
-        .contact-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        .contact-link-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.2rem;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.2s;
-            color: var(--text);
-        }
-        .contact-link-item:hover {
-            border-color: var(--volt);
-            transform: translateX(6px);
-        }
-        .contact-link-item i { color: var(--volt); width: 20px; }
-        .contact-link-item span { font-size: 0.85rem; }
-        .contact-link-item .arrow { margin-left: auto; color: var(--muted); font-size: 0.8rem; transition: color 0.2s; }
-        .contact-link-item:hover .arrow { color: var(--volt); }
-
-        /* ── FOOTER ── */
-        footer {
-            position: relative;
-            z-index: 1;
-            border-top: 1px solid var(--border);
-            padding: 2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        footer p { font-size: 0.78rem; color: var(--muted); }
-        footer .footer-volt {
-            font-size: 0.72rem;
-            color: var(--volt);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        footer .footer-volt::before {
-            content: '';
-            width: 6px; height: 6px;
-            background: var(--volt);
-            border-radius: 50%;
-            box-shadow: var(--glow-volt);
-            animation: pulse 2s infinite;
-        }
-
-        /* ── FADE-IN REVEAL ── */
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: none;
-        }
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-
-        /* ── SCROLLBAR ── */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--ink); }
-        ::-webkit-scrollbar-thumb { background: var(--volt); border-radius: 3px; }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 1024px) {
-            .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
-            .profile-card { order: -1; max-width: 360px; margin: 0 auto; }
-            .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-            .projects-grid { grid-template-columns: 1fr; }
-            .two-col { grid-template-columns: 1fr; }
-            .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
-        }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero-name { letter-spacing: -2px; }
-            .profile-img-wrap { width: 250px; height: 250px; }
-            footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-        }
-        body { cursor: auto; }
-        @media (pointer: fine) { body { cursor: none; } }
-    </style>
-</head>
-<body>
-
-    <!-- Custom cursor -->
-    <div class="cursor-dot" id="cursorDot"></div>
-    <div class="cursor-ring" id="cursorRing"></div>
-
-    <!-- Background -->
-    <div class="bg-field"></div>
-    <div class="grid-field"></div>
-
-    <!-- NAV -->
-    <nav>
-        <a href="#home" class="nav-logo">
-            <span class="bracket">&lt;</span>SS<span class="bracket">/&gt;</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="#about" data-num="01">About</a></li>
-            <li><a href="#posts" data-num="02">Posts</a></li>
-            <li><a href="#skills" data-num="03">Skills</a></li>
-            <li><a href="#certifications" data-num="04">Certs</a></li>
-            <li><a href="#projects" data-num="05">Projects</a></li>
-        </ul>
-        <div class="nav-right">
-            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </button>
-            <a href="https://drive.google.com/file/d/153ME7PqdaAa3FITkp-ATv49hRbTHIeFZ/view?usp=sharing" target="_blank" class="nav-cv-btn" aria-label="View CV">
-                <i class="fas fa-file-pdf"></i>
-                <span>Download CV</span>
-            </a>
-            <a href="#contact" class="hire-btn">Contact →</a>
-        </div>
-    </nav>
-
-    <!-- ── HERO ── -->
-    <section class="hero" id="home">
-        <div class="hero-inner">
-            <div class="hero-left">
-                <div class="hero-label">// Software Engineer Intern</div>
-                <h1 class="hero-name">
-                    <span class="line-1">SITHIL</span>
-                    <span class="line-2" data-text="SEMITHA">SEMITHA</span>
-                </h1>
-                <p class="hero-role">
-                    Full-Stack Developer &amp; <span>CS Undergraduate</span>
-                </p>
-                <p class="hero-desc">
-                    Second-year Computer Science undergraduate building end-to-end solutions.
-                    Ranked <strong>top 3 in batch</strong> with a <strong>3.991 GPA</strong> —
-                    turning complex problems into elegant, production-ready code.
-                </p>
-                <div class="hero-cta">
-                    <a href="#projects" class="btn-volt filled">View Projects <i class="fas fa-arrow-right"></i></a>
-                    <a href="#contact" class="btn-volt outline">Get In Touch</a>
-                </div>
-            </div>
-
-            <div class="profile-card">
-                <div class="profile-img-wrap">
-                    <img src="assets/ChatGPT Image Jan 11, 2026, 02_33_54 PM.png"
-                         alt="Sithil Semitha"
-                         class="profile-photo"
-                         onerror="this.style.display='none'">
-                </div>
-                <div class="profile-badge">
-                    <div class="dot"></div>
-                    Available for Internship
-                </div>
-                <div class="profile-social">
-                    <a href="https://github.com/SithilSemitha" target="_blank" class="social-chip">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" class="social-chip">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                </div>
-                <div class="stat-chips">
-                    <div class="stat-chip">
-                        <span class="stat-chip-val">3.991</span>
-                        <span class="stat-chip-lbl">GPA · Distinction</span>
-                    </div>
-                    <div class="stat-chip">
-                        <span class="stat-chip-val">TOP 3</span>
-                        <span class="stat-chip-lbl">Batch Rank</span>
-                    </div>
-                    <div class="stat-chip">
-                        <span class="stat-chip-val">8A 1B</span>
-                        <span class="stat-chip-lbl">GCE O-Levels</span>
-                    </div>
-                    <div class="stat-chip">
-                        <span class="stat-chip-val">2nd Yr</span>
-                        <span class="stat-chip-lbl">BSc Comp. Sci</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- ── ABOUT ── -->
-    <div class="section-wrap" id="about">
-        <div class="section-head reveal">
-            <div class="section-eyebrow">// 01 — About Me</div>
-            <h2 class="section-title">Academic excellence<br><span>meets technical craft</span></h2>
-        </div>
-        <div class="about-grid">
-            <div class="about-text reveal">
-                <p>I'm a dedicated software engineering student in my second year pursuing a <strong>BSc in Computer Science</strong>. My journey began with outstanding GCE O-Level results, and I've continued to excel — graduating first year with distinction and a 3.991 GPA, ranked in the <strong>top 3 of my batch</strong>.</p>
-                <p>As an aspiring full-stack developer, I'm passionate about building <strong>end-to-end solutions</strong> that tackle real-world problems. I work across the entire stack — from database design to polished front-end interfaces.</p>
-                <p>I thrive on learning new technologies and translating complex requirements into clean, maintainable code. From microservice architectures to mobile apps, I approach every project with the same drive for quality.</p>
-            </div>
-            <div class="about-highlights reveal reveal-delay-1">
-                <div class="highlight-item">
-                    <div class="highlight-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <div class="highlight-meta">
-                        <strong>BSc Computer Science</strong>
-                        <span>2nd Year · First Class Distinction</span>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon"><i class="fas fa-trophy"></i></div>
-                    <div class="highlight-meta">
-                        <strong>Top 3 in Batch</strong>
-                        <span>3.991 GPA — Academic Excellence</span>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon"><i class="fas fa-award"></i></div>
-                    <div class="highlight-meta">
-                        <strong>Best Project Award</strong>
-                        <span>TechSpace · Academic Year 2023/24</span>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon"><i class="fas fa-cloud"></i></div>
-                    <div class="highlight-meta">
-                        <strong>Cloud & AI Certified</strong>
-                        <span>Oracle OCI · Microsoft Azure · Cisco</span>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon"><i class="fas fa-envelope"></i></div>
-                    <div class="highlight-meta">
-                        <strong>sithilsemithad@gmail.com</strong>
-                        <span>Open to opportunities</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ── POSTS ── -->
-    <div class="section-wrap" id="posts">
-        <div class="section-head reveal">
-            <div class="section-eyebrow">// 02 — Recent Activity</div>
-            <h2 class="section-title">Latest <span>milestones</span></h2>
-        </div>
-        <div class="two-col">
-            <div class="post-card reveal">
-                <div class="post-meta">
-                    <span class="post-date"><i class="far fa-calendar"></i> Jan 2025</span>
-                    <span class="post-cat">Achievement</span>
-                </div>
-                <h4>Oracle Cloud Infrastructure 2025 Certified Foundations Associate</h4>
-                <p>Completed OCI 2025 Foundations certification — demonstrating expertise in cloud computing fundamentals and Oracle's cloud platform architecture.</p>
-                <div class="post-tags">
-                    <span class="post-tag">Cloud</span>
-                    <span class="post-tag">Oracle</span>
-                    <span class="post-tag">Certification</span>
-                </div>
-            </div>
-            <div class="post-card reveal reveal-delay-1">
-                <div class="post-meta">
-                    <span class="post-date"><i class="far fa-calendar"></i> Jan 2025</span>
-                    <span class="post-cat">Learning</span>
-                </div>
-                <h4>Build Your Own AI Chatbot with Azure AI Foundry — Microsoft</h4>
-                <p>Gained hands-on experience building AI-powered chatbots using Microsoft Azure's AI services, exploring real-world NLP deployment patterns.</p>
-                <div class="post-tags">
-                    <span class="post-tag">AI</span>
-                    <span class="post-tag">Azure</span>
-                    <span class="post-tag">Microsoft</span>
-                </div>
-            </div>
-            <div class="post-card reveal reveal-delay-1">
-                <div class="post-meta">
-                    <span class="post-date"><i class="far fa-calendar"></i> Jan 2025</span>
-                    <span class="post-cat">Certification</span>
-                </div>
-                <h4>Introduction to Cybersecurity — Cisco</h4>
-                <p>Expanded knowledge in network security, threat detection strategies, and cybersecurity best practices through Cisco's official curriculum.</p>
-                <div class="post-tags">
-                    <span class="post-tag">Cybersecurity</span>
-                    <span class="post-tag">Cisco</span>
-                    <span class="post-tag">Networking</span>
-                </div>
-            </div>
-            <div class="post-card reveal reveal-delay-2">
-                <div class="post-meta">
-                    <span class="post-date"><i class="far fa-calendar"></i> 2024</span>
-                    <span class="post-cat">Achievement</span>
-                </div>
-                <h4>Ranked Top 3 in Batch with 3.991 GPA</h4>
-                <p>Achieved top 3 ranking with distinction in first year — a testament to consistent dedication, discipline, and a drive for academic and technical excellence.</p>
-                <div class="post-tags">
-                    <span class="post-tag">Academic</span>
-                    <span class="post-tag">Excellence</span>
-                    <span class="post-tag">GPA</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ── SKILLS ── -->
-    <div class="section-wrap" id="skills">
-        <div class="section-head reveal">
-            <div class="section-eyebrow">// 03 — Technical Skills</div>
-            <h2 class="section-title">Tools I <span>build with</span></h2>
-        </div>
-
-        <div class="skills-group reveal">
-            <div class="skills-group-title">Frontend</div>
-            <div class="skills-flex">
-                <div class="skill-pill"><i class="fab fa-react"></i> React.js</div>
-                <div class="skill-pill"><i class="fab fa-react"></i> Next.js</div>
-                <div class="skill-pill"><i class="fab fa-html5"></i> HTML5</div>
-                <div class="skill-pill"><i class="fab fa-css3-alt"></i> CSS3</div>
-                <div class="skill-pill"><i class="fab fa-js"></i> JavaScript</div>
-            </div>
-        </div>
-
-        <div class="skills-group reveal">
-            <div class="skills-group-title">Backend</div>
-            <div class="skills-flex">
-                <div class="skill-pill"><i class="fab fa-node-js"></i> Node.js</div>
-                <div class="skill-pill"><i class="fas fa-server"></i> Express.js</div>
-                <div class="skill-pill"><i class="fab fa-python"></i> Python</div>
-                <div class="skill-pill"><i class="fas fa-leaf"></i> Spring Boot</div>
-                <div class="skill-pill"><i class="fas fa-desktop"></i> Electron.js</div>
-            </div>
-        </div>
-
-        <div class="skills-group reveal">
-            <div class="skills-group-title">Databases</div>
-            <div class="skills-flex">
-                <div class="skill-pill"><i class="fas fa-database"></i> MongoDB</div>
-                <div class="skill-pill"><i class="fas fa-database"></i> PostgreSQL</div>
-                <div class="skill-pill"><i class="fas fa-database"></i> MySQL</div>
-                <div class="skill-pill"><i class="fas fa-database"></i> Oracle DB</div>
-                <div class="skill-pill"><i class="fas fa-database"></i> SQLite</div>
-                <div class="skill-pill"><i class="fas fa-code"></i> PL/SQL</div>
-            </div>
-        </div>
-
-        <div class="skills-group reveal">
-            <div class="skills-group-title">Tools & Platforms</div>
-            <div class="skills-flex">
-                <div class="skill-pill"><i class="fab fa-git-alt"></i> Git</div>
-                <div class="skill-pill"><i class="fab fa-github"></i> GitHub</div>
-                <div class="skill-pill"><i class="fas fa-microchip"></i> Arduino</div>
-                <div class="skill-pill"><i class="fas fa-cloud"></i> Oracle Cloud</div>
-                <div class="skill-pill"><i class="fab fa-microsoft"></i> Azure</div>
-                <div class="skill-pill"><i class="fas fa-fire"></i> Firebase</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ── CERTIFICATIONS ── -->
-    <div class="section-wrap" id="certifications">
-        <div class="section-head reveal">
-            <div class="section-eyebrow">// 04 — Certifications</div>
-            <h2 class="section-title">Credentials &amp; <span>recognition</span></h2>
-        </div>
-        <div class="two-col">
-            <div class="cert-card reveal">
-                <div class="cert-icon-wrap"><i class="fas fa-cloud"></i></div>
-                <div class="cert-body">
-                    <strong>Oracle Cloud Infrastructure 2025 Certified Foundations Associate</strong>
-                    <div class="cert-org">Oracle · 2025</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-            <div class="cert-card reveal reveal-delay-1">
-                <div class="cert-icon-wrap"><i class="fab fa-microsoft"></i></div>
-                <div class="cert-body">
-                    <strong>Build Your Own AI Chatbot with Azure AI Foundry</strong>
-                    <div class="cert-org">Microsoft · 2025</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-            <div class="cert-card reveal">
-                <div class="cert-icon-wrap"><i class="fas fa-shield-alt"></i></div>
-                <div class="cert-body">
-                    <strong>Introduction to Cybersecurity</strong>
-                    <div class="cert-org">Cisco · 2025</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-            <div class="cert-card reveal reveal-delay-1">
-                <div class="cert-icon-wrap"><i class="fas fa-layer-group"></i></div>
-                <div class="cert-body">
-                    <strong>Full Stack Web Development</strong>
-                    <div class="cert-org">Online Platform · 2024–Present</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-            <div class="cert-card reveal">
-                <div class="cert-icon-wrap"><i class="fab fa-react"></i></div>
-                <div class="cert-body">
-                    <strong>React Development Certification</strong>
-                    <div class="cert-org">Online Course · 2024</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-            <div class="cert-card reveal reveal-delay-1">
-                <div class="cert-icon-wrap"><i class="fab fa-node-js"></i></div>
-                <div class="cert-body">
-                    <strong>Node.js Backend Development</strong>
-                    <div class="cert-org">Online Platform · 2024</div>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank">View on LinkedIn <i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ── PROJECTS ── -->
-    <div class="section-wrap" id="projects">
-        <div class="section-head reveal">
-            <div class="section-eyebrow">// 05 — Projects</div>
-            <h2 class="section-title">Things I've <span>built</span></h2>
-        </div>
-        <div class="projects-grid">
-
-            <div class="project-card reveal">
-                <div class="project-number">001 / 004</div>
-                <span class="project-tag tag-micro"><i class="fas fa-cubes"></i> Microservices</span>
-                <h3>Financial Management System</h3>
-                <p>Comprehensive personal finance platform built on a microservice architecture. Features modern React frontend, automatic sync between local SQLite and central Oracle DB, and clean REST APIs via Spring Boot services.</p>
-                <div class="tech-row">
-                    <span class="tech-chip">Spring Boot</span>
-                    <span class="tech-chip">React.js</span>
-                    <span class="tech-chip">Oracle DB</span>
-                    <span class="tech-chip">SQLite</span>
-                    <span class="tech-chip">REST APIs</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/Financial-Managements-Syste" target="_blank" class="link-btn">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/details/projects/" target="_blank" class="link-btn">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                </div>
-            </div>
-
-            <div class="project-card reveal reveal-delay-1">
-                <div class="project-number">002 / 004</div>
-                <span class="project-tag tag-mobile"><i class="fas fa-mobile-alt"></i> Mobile App</span>
-                <h3>Pizza Mania — Smart Food Ordering</h3>
-                <p>Feature-rich Android pizza ordering app with real-time ordering, smart location detection via Google Maps, secure Stripe payments, and a comprehensive admin dashboard for order and inventory management.</p>
-                <div class="tech-row">
-                    <span class="tech-chip">Android</span>
-                    <span class="tech-chip">Java</span>
-                    <span class="tech-chip">Firebase</span>
-                    <span class="tech-chip">Google Maps API</span>
-                    <span class="tech-chip">Stripe API</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/MobileApplicationDevelopmentCW/CW1" target="_blank" class="link-btn">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/details/projects/" target="_blank" class="link-btn">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                </div>
-            </div>
-
-            <div class="project-card reveal">
-                <div class="project-number">003 / 004</div>
-                <span class="project-tag tag-micro"><i class="fas fa-cubes"></i> Microservices</span>
-                <h3>FOS ME — Food Ordering System</h3>
-                <p>Scalable, modular food ordering platform built on independent microservices. Handles auth, menu management, order processing, and delivery tracking through an API Gateway with Next.js frontend.</p>
-                <div class="tech-row">
-                    <span class="tech-chip">Spring Boot</span>
-                    <span class="tech-chip">Next.js</span>
-                    <span class="tech-chip">API Gateway</span>
-                    <span class="tech-chip">MySQL</span>
-                    <span class="tech-chip">REST APIs</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/EAD2-CW/Food-Ordering-System" target="_blank" class="link-btn">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/details/projects/" target="_blank" class="link-btn">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                </div>
-            </div>
-
-            <div class="project-card reveal reveal-delay-1">
-                <div class="project-number">004 / 004</div>
-                <span class="project-tag tag-featured"><i class="fas fa-star"></i> Best Project Award</span>
-                <h3>TechSpace — Apparel Export Management System</h3>
-                <p>Large-scale ERP for a clothing manufacturer — covering raw material procurement, production, HR, finance, and international client sales. Awarded <strong>Best Project of the Academic Year</strong> for its scale and technical depth.</p>
-                <div class="tech-row">
-                    <span class="tech-chip">PHP</span>
-                    <span class="tech-chip">MySQL</span>
-                    <span class="tech-chip">Apache</span>
-                    <span class="tech-chip">Bootstrap</span>
-                    <span class="tech-chip">JavaScript</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/orgs/techspace2/repositories" target="_blank" class="link-btn">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/sithil-semitha/details/projects/" target="_blank" class="link-btn">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ── CONTACT ── -->
-    <div class="section-wrap" id="contact">
-        <div class="contact-inner">
-            <div class="contact-text reveal">
-                <div class="section-eyebrow">// 06 — Contact</div>
-                <h2>Let's build<br><span>something great</span></h2>
-                <p>I'm always open to discussing new opportunities, internships, collaborations, or just connecting with fellow builders. Drop me a message — I reply fast.</p>
-                <a href="mailto:sithilsemithad@gmail.com" class="btn-volt filled" style="display:inline-flex; width: fit-content;">
-                    Send Email <i class="fas fa-paper-plane"></i>
-                </a>
-            </div>
-            <div class="contact-links reveal reveal-delay-1">
-                <a href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" class="contact-link-item">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Download CV</span>
-                    <i class="fas fa-arrow-right arrow"></i>
-                </a>
-                <a href="mailto:sithilsemithad@gmail.com" class="contact-link-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>sithilsemithad@gmail.com</span>
-                    <i class="fas fa-arrow-right arrow"></i>
-                </a>
-                <a href="https://github.com/SithilSemitha" target="_blank" class="contact-link-item">
-                    <i class="fab fa-github"></i>
-                    <span>github.com/SithilSemitha</span>
-                    <i class="fas fa-arrow-right arrow"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" class="contact-link-item">
-                    <i class="fab fa-linkedin"></i>
-                    <span>linkedin.com/in/sithil-semitha</span>
-                    <i class="fas fa-arrow-right arrow"></i>
-                </a>
-                <a href="https://www.instagram.com/semithaaaaa/" target="_blank" class="contact-link-item">
-                    <i class="fab fa-instagram"></i>
-                    <span>@semithaaaaa</span>
-                    <i class="fas fa-arrow-right arrow"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>© 2026 Sithil Semitha. Designed with intention.</p>
-        <div class="footer-volt">Powered up &amp; ready</div>
-    </footer>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sithil Semitha — Software Engineer & AI Builder</title>
+    <meta name="description" content="Portfolio of Sithil Semitha, a Computer Science undergraduate specializing in Applied AI, software engineering, full-stack development, and intelligent systems." />
+    <link rel="canonical" href="https://www.sithil.me/" />
+    <meta name="theme-color" content="#050505" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script>
-        /* ── CURSOR ── */
-        const dot = document.getElementById('cursorDot');
-        const ring = document.getElementById('cursorRing');
-        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-        document.addEventListener('mousemove', e => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            dot.style.left = mouseX + 'px';
-            dot.style.top  = mouseY + 'px';
-        });
-
-        function animateRing() {
-            ringX += (mouseX - ringX) * 0.12;
-            ringY += (mouseY - ringY) * 0.12;
-            ring.style.left = ringX + 'px';
-            ring.style.top  = ringY + 'px';
-            requestAnimationFrame(animateRing);
-        }
-        animateRing();
-
-        document.querySelectorAll('a, button, .skill-pill, .project-card').forEach(el => {
-            el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
-        });
-
-        /* ── SCROLL REVEAL ── */
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('visible');
-                    observer.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        /* ── NAV ACTIVE ── */
-        window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('[id]');
-            const navLinks = document.querySelectorAll('.nav-links a');
-            let current = '';
-            sections.forEach(s => {
-                if (window.scrollY >= s.offsetTop - 200) current = s.getAttribute('id');
-            });
-            navLinks.forEach(a => {
-                a.style.color = '';
-                if (a.getAttribute('href') === '#' + current) a.style.color = 'var(--volt)';
-            });
-        });
-
-        /* ── SMOOTH SCROLL ── */
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', e => {
-                const target = document.querySelector(a.getAttribute('href'));
-                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            });
-        });
-
-        /* ── THEME TOGGLE ── */
-        const html = document.documentElement;
-        const toggle = document.getElementById('themeToggle');
-        const icon   = document.getElementById('themeIcon');
-        const saved  = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', saved);
-        icon.className = saved === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-
-        toggle.addEventListener('click', () => {
-            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            icon.className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-        });
+      // Applied before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          if (saved === "light" || saved === "dark") {
+            document.documentElement.setAttribute("data-theme", saved);
+          }
+        } catch (e) {}
+      })();
     </script>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Sithil Semitha — Software Engineer & AI Builder" />
+    <meta property="og:description" content="Portfolio of Sithil Semitha, a Computer Science undergraduate specializing in Applied AI, software engineering, full-stack development, and intelligent systems." />
+    <meta property="og:url" content="https://www.sithil.me/" />
+    <meta property="og:image" content="https://www.sithil.me/assets/img/profile.png" />
+    <meta property="og:site_name" content="Sithil Semitha" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sithil Semitha — Software Engineer & AI Builder" />
+    <meta name="twitter:description" content="Portfolio of Sithil Semitha, a Computer Science undergraduate specializing in Applied AI, software engineering, full-stack development, and intelligent systems." />
+    <meta name="twitter:image" content="https://www.sithil.me/assets/img/profile.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sithil Semitha","url":"https://www.sithil.me/","email":"mailto:sithilsemithad@gmail.com","jobTitle":"Software Engineer & AI Engineer","sameAs":["https://github.com/SithilSemitha","https://www.linkedin.com/in/sithil-semitha/"],"affiliation":{"@type":"CollegeOrUniversity","name":"BSc (Hons) Computer Science with Applied Artificial Intelligence"}}</script>
+  </head>
+<body class="has-custom-cursor is-loading">
+<noscript><style>#preloader{display:none!important;}</style></noscript>
+  <div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Loading">
+    <span class="preloader-marker preloader-marker-tl mono" aria-hidden="true">SYS/BOOT</span>
+    <span class="preloader-marker preloader-marker-br mono" aria-hidden="true" id="preloaderPercent">0%</span>
+    <div class="preloader-inner">
+      <div class="preloader-logo mono">SITHIL<span>.ME</span></div>
+      <div class="preloader-bar"><div class="preloader-bar-fill" id="preloaderFill"></div></div>
+      <div class="preloader-status mono" id="preloaderStatus">INITIALIZING SYSTEM<span class="term-cursor" aria-hidden="true"></span></div>
+    </div>
+  </div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="backdrop" aria-hidden="true"></div><div class="noise" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+  <nav class="nav" aria-label="Primary">
+    <a href="/#home" class="nav-logo">SITHIL<span>.ME</span></a>
+    <ul class="nav-links">
+      <li><a href="/#work" data-num="05">Work</a></li><li><a href="/#about" data-num="01">About</a></li><li><a href="/#stack" data-num="04">Stack</a></li><li><a href="/#experience" data-num="06">Experience</a></li><li><a href="/#certifications" data-num="03">Certs</a></li><li><a href="/#contact" data-num="09">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="status-pill"><span class="status-dot" aria-hidden="true"></span>AVAILABLE FOR OPPORTUNITIES</div>
+      <a class="nav-cv-desktop mono" href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" rel="noopener" style="font-size:.72rem;letter-spacing:.08em;color:var(--text-1);display:flex;align-items:center;gap:.4rem;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>CV</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Switch to light theme">
+        <span class="icon-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a8.5 8.5 0 1 1-9-11 7 7 0 0 0 9 11Z"/></svg></span><span class="icon-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <nav aria-label="Mobile">
+      <a href="/#work"><span>05</span>Work</a><a href="/#about"><span>01</span>About</a><a href="/#stack"><span>04</span>Stack</a><a href="/#experience"><span>06</span>Experience</a><a href="/#certifications"><span>03</span>Certs</a><a href="/#contact"><span>09</span>Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a class="btn btn-outline" href="https://github.com/SithilSemitha" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-outline" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn btn-fill" href="mailto:sithilsemithad@gmail.com">Email</a>
+    </div>
+  </div>
+<main id="main">
+<section class="hero" id="home">
+    <div class="hero-grid">
+      <div>
+        <p class="hero-label mono">// SOFTWARE ENGINEER · AI BUILDER · CS UNDERGRADUATE</p>
+        <h1 class="hero-title">I BUILD<br />SOFTWARE<br /><span class="accent">THAT THINKS.</span></h1>
+        <p class="hero-sub">
+          Computer Science undergraduate specializing in <strong>Applied AI</strong>,
+          full-stack development, and intelligent software systems.
+        </p>
+        <dl class="hero-meta">
+          <div><dt>LOCATION</dt><dd>SRI LANKA</dd></div>
+          <div><dt>DISCIPLINE</dt><dd>COMPUTER SCIENCE</dd></div>
+          <div><dt>SPECIALIZATION</dt><dd>APPLIED AI</dd></div>
+          <div><dt>STATUS</dt><dd>BUILDING</dd></div>
+        </dl>
+        <div class="hero-cta">
+          <a href="#work" class="btn btn-fill">View Work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" rel="noopener" class="btn btn-outline">Download CV <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="hero-profile reveal">
+          <div class="hero-avatar-wrap">
+            <img class="hero-avatar" src="/assets/img/profile.png" alt="Photo of Sithil Semitha" width="104" height="104" loading="eager" />
+          </div>
+          <div class="hero-profile-body">
+            <div class="hero-profile-name mono">SITHIL SEMITHA</div>
+            <div class="hero-profile-links">
+              <a href="https://github.com/SithilSemitha" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a>
+              <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8h4v1.5A5.98 5.98 0 0 1 16 8Z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+              <a href="mailto:sithilsemithad@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></a>
+              <a href="https://www.instagram.com/semithaaaaa/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal reveal" role="img" aria-label="System initialization terminal showing core module, database, API layer, AI engine, and vector search all reporting OK, ending in SYSTEM READY.">
+          <div class="terminal-bar">
+            <span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span>
+            <span class="terminal-title mono">system.init — sithil</span>
+          </div>
+          <div class="terminal-body" id="termBody" aria-hidden="true"></div>
+          <div class="terminal-nodes">
+            <div class="terminal-node"><span class="val">04</span><span class="lbl">PROJECTS</span></div>
+            <div class="terminal-node"><span class="val">03</span><span class="lbl">YEARS CS</span></div>
+            <div class="terminal-node"><span class="val">06</span><span class="lbl">CREDENTIALS</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#about" class="hero-scroll mono">SCROLL TO EXPLORE</a>
+  </section>
+<section class="section" id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">01 / PROFILE</p>
+        <h2 class="section-title">SOFTWARE ENGINEERING<br />MEETS <em>APPLIED AI.</em></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>I'm a third-year <strong>BSc (Hons) Computer Science with Applied Artificial Intelligence</strong> undergraduate. My work sits across full-stack development, backend engineering, and applied AI — building systems end to end rather than staying in one layer of the stack.</p>
+          <p>Most of what I build falls into three buckets: <strong>full-stack applications</strong> with real backend architecture behind them, <strong>microservice-based systems</strong> that need to scale independently, and <strong>AI-engineering experiments</strong> — RAG pipelines, local LLMs, and agentic tooling.</p>
+          <p>I like understanding systems at the level of databases, algorithms, and architecture, not just the surface UI. That's the thread connecting a finance platform built on Spring Boot microservices, a TSP-solving fleet optimizer, and a RAG assistant for board documents.</p>
+        </div>
+        <div class="about-list reveal reveal-d1">
+          <div class="about-item">
+            <span class="num mono">01</span>
+            <div><strong>BSc Computer Science with Applied AI</strong><span>3rd Year · 2024 — 2028</span></div>
+          </div>
+          <div class="about-item">
+            <span class="num mono">02</span>
+            <div><strong>Top 3 in Batch — Year 1</strong><span>3.991 GPA, Distinction</span></div>
+          </div>
+          <div class="about-item">
+            <span class="num mono">03</span>
+            <div><strong>Best Project Award</strong><span>TechSpace · Enterprise ERP</span></div>
+          </div>
+          <div class="about-item">
+            <span class="num mono">04</span>
+            <div><strong>Cloud &amp; AI Certified</strong><span>Oracle OCI · Microsoft Azure · Cisco</span></div>
+          </div>
+          <div class="about-item">
+            <span class="num mono">05</span>
+            <div><strong>sithilsemithad@gmail.com</strong><span>Available for opportunities</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="education">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">02 / EDUCATION</p>
+        <h2 class="section-title">ACADEMIC <em>RECORD.</em></h2>
+      </div>
+
+      <div class="edu-primary reveal">
+        <div class="edu-top">
+          <div>
+            <div class="edu-degree">BSc (Hons) Computer Science with Applied Artificial Intelligence</div>
+            <div class="edu-status mono"><span class="status-dot" aria-hidden="true"></span>3RD YEAR — IN PROGRESS</div>
+          </div>
+          <div class="edu-period">2024 — 2028</div>
+        </div>
+        <div class="edu-areas">
+          <span class="edu-area">Software Engineering</span><span class="edu-area">Artificial Intelligence</span><span class="edu-area">Machine Learning</span><span class="edu-area">Database Systems</span><span class="edu-area">Distributed Systems</span><span class="edu-area">Algorithms</span><span class="edu-area">Mobile Development</span><span class="edu-area">IoT Systems</span>
+        </div>
+      </div>
+
+      <div class="edu-prev-grid reveal reveal-d1">
+        <div class="edu-prev">
+          <strong>Higher National Diploma in Computer Science</strong>
+          <div class="meta">2024 — 2025 · COMPLETED</div>
+        </div><div class="edu-prev">
+          <strong>Diploma in Software Engineering</strong>
+          <div class="meta">COMPLETED</div>
+        </div>
+      </div>
+
+      <table class="record-table reveal reveal-d2">
+        <thead>
+          <tr><th>Year</th><th>GPA</th><th>Batch Rank</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Year 1</td><td class="gpa">3.991</td><td>Top 3</td><td>Distinction</td></tr><tr><td>Year 2</td><td class="gpa">3.95</td><td>2nd</td><td>Distinction</td></tr><tr><td>Year 3</td><td class="gpa">—</td><td>—</td><td>In Progress</td></tr>
+        </tbody>
+      </table>
+
+      <div class="stats-row reveal reveal-d2" id="achievements">
+        <div class="stat-card"><span class="val">TOP 3</span><span class="lbl">BATCH RANK · YEAR 1</span></div><div class="stat-card"><span class="val">3.991</span><span class="lbl">GPA · YEAR 1 DISTINCTION</span></div><div class="stat-card"><span class="val">2ND</span><span class="lbl">BATCH RANK · YEAR 2</span></div><div class="stat-card"><span class="val">8A 1B</span><span class="lbl">GCE O-LEVEL</span></div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="certifications">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">03 / CREDENTIALS</p>
+        <h2 class="section-title">CERTIFIED TO <em>BUILD.</em></h2>
+      </div>
+      <div class="cert-timeline">
+        <div class="cert-row reveal ">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>Oracle Cloud Infrastructure 2025 Certified Foundations Associate</strong>
+              <div class="cert-provider mono">Oracle · 2025</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Cloud</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div><div class="cert-row reveal reveal-d1">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>Build Your Own AI Chatbot with Azure AI Foundry</strong>
+              <div class="cert-provider mono">Microsoft · 2025</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Artificial Intelligence</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div><div class="cert-row reveal ">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>Introduction to Cybersecurity</strong>
+              <div class="cert-provider mono">Cisco · 2025</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Cybersecurity</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div><div class="cert-row reveal reveal-d1">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>Full Stack Web Development</strong>
+              <div class="cert-provider mono">Online Platform · 2024–Present</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Web Development</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div><div class="cert-row reveal ">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>React Development Certification</strong>
+              <div class="cert-provider mono">Online Course · 2024</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Frontend</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div><div class="cert-row reveal reveal-d1">
+          <div class="cert-card">
+            <div class="cert-info">
+              <strong>Node.js Backend Development</strong>
+              <div class="cert-provider mono">Online Platform · 2024</div>
+            </div>
+            <div class="cert-side">
+              <span class="cert-cat mono">Backend</span>
+              <a class="cert-verify" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">VERIFY CREDENTIAL →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="stack">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">04 / STACK</p>
+        <h2 class="section-title">THE TOOLS<br />I <em>BUILD WITH.</em></h2>
+      </div>
+      <div class="stack-grid">
+        <div class="reveal ">
+          <p class="stack-group-title">Frontend</p>
+          <div class="stack-pills">
+            <span class="stack-pill">React.js</span><span class="stack-pill">Next.js</span><span class="stack-pill">HTML5</span><span class="stack-pill">CSS3</span><span class="stack-pill">JavaScript</span>
+          </div>
+        </div><div class="reveal reveal-d1">
+          <p class="stack-group-title">Backend</p>
+          <div class="stack-pills">
+            <span class="stack-pill">Node.js</span><span class="stack-pill">Express.js</span><span class="stack-pill">Python</span><span class="stack-pill">Spring Boot</span><span class="stack-pill">Electron.js</span>
+          </div>
+        </div><div class="reveal reveal-d2">
+          <p class="stack-group-title">Databases</p>
+          <div class="stack-pills">
+            <span class="stack-pill">MongoDB</span><span class="stack-pill">PostgreSQL</span><span class="stack-pill">MySQL</span><span class="stack-pill">Oracle DB</span><span class="stack-pill">SQLite</span><span class="stack-pill">PL/SQL</span>
+          </div>
+        </div><div class="reveal ">
+          <p class="stack-group-title">Cloud / Platforms</p>
+          <div class="stack-pills">
+            <span class="stack-pill">Oracle Cloud</span><span class="stack-pill">Microsoft Azure</span><span class="stack-pill">Firebase</span>
+          </div>
+        </div><div class="reveal reveal-d1">
+          <p class="stack-group-title">Development</p>
+          <div class="stack-pills">
+            <span class="stack-pill">Git</span><span class="stack-pill">GitHub</span><span class="stack-pill">REST APIs</span><span class="stack-pill">Docker</span>
+          </div>
+        </div><div class="reveal reveal-d2">
+          <p class="stack-group-title">AI / ML</p>
+          <div class="stack-pills">
+            <span class="stack-pill">Machine Learning</span><span class="stack-pill">LLMs</span><span class="stack-pill">RAG</span><span class="stack-pill">Embeddings</span><span class="stack-pill">Ollama</span><span class="stack-pill">Vector Databases</span><span class="stack-pill">AI APIs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="work">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">05 / SELECTED WORK</p>
+        <h2 class="section-title">THINGS<br />I'VE <em>BUILT.</em></h2>
+      </div>
+
+      <article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">001 / 007</div>
+          <span class="project-tag mono">Microservices</span>
+          
+          <h3 class="project-title">Financial Management System</h3>
+          <div class="project-links">
+            <a class="btn btn-outline" href="https://github.com/SithilSemitha/Financial-System-Back-End" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+            <a class="btn btn-fill" href="/projects/financial-management-system/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A comprehensive personal finance platform built on a microservice architecture — React frontend, Spring Boot services, and dual-database sync between a local SQLite store and a central Oracle database.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">React</span><span class="tech-chip mono">Spring Boot</span><span class="tech-chip mono">Oracle DB</span><span class="tech-chip mono">SQLite</span><span class="tech-chip mono">REST APIs</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: REACT leads to API GATEWAY leads to SPRING BOOT SERVICES leads to ORACLE DB leads to SQLITE">
+            <div class="arch-node">REACT</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">API GATEWAY</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">SPRING BOOT SERVICES</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">ORACLE DB</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">SQLITE</div>
+          </div>
+          <p class="arch-note">Oracle DB and SQLite stay in sync — SQLite handles local/offline reads and writes, reconciling back to the central Oracle instance.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">002 / 007</div>
+          <span class="project-tag mono">Mobile / Payments</span>
+          
+          <h3 class="project-title">Pizza Mania</h3>
+          <div class="project-links">
+            <a class="btn btn-outline" href="https://github.com/SithilSemitha/Pizza-Mania" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+            <a class="btn btn-fill" href="/projects/pizza-mania/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>An Android food-ordering app with real-time ordering, Google Maps location detection, Stripe payments, and an admin dashboard for order and inventory management.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">Android</span><span class="tech-chip mono">Java</span><span class="tech-chip mono">Firebase</span><span class="tech-chip mono">Google Maps API</span><span class="tech-chip mono">Stripe API</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: ANDROID CLIENT leads to FIREBASE (AUTH / REALTIME DB) leads to GOOGLE MAPS API leads to STRIPE API leads to ADMIN DASHBOARD">
+            <div class="arch-node">ANDROID CLIENT</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">FIREBASE (AUTH / REALTIME DB)</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">GOOGLE MAPS API</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">STRIPE API</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">ADMIN DASHBOARD</div>
+          </div>
+          <p class="arch-note">Firebase Realtime Database drives live order status; Stripe handles payment capture independently of the order-state pipeline.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">003 / 007</div>
+          <span class="project-tag mono">Microservices</span>
+          
+          <h3 class="project-title">FOS ME</h3>
+          <div class="project-links">
+            <a class="btn btn-outline" href="https://github.com/SithilSemitha/Food-Ordering-System" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+            <a class="btn btn-fill" href="/projects/fos-me/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A scalable food ordering platform split into independent services for authentication, menu management, order processing, and delivery tracking behind a single API gateway.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">Spring Boot</span><span class="tech-chip mono">Next.js</span><span class="tech-chip mono">API Gateway</span><span class="tech-chip mono">MySQL</span><span class="tech-chip mono">REST APIs</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: NEXT.JS leads to API GATEWAY leads to AUTH SERVICE leads to MENU SERVICE leads to ORDER SERVICE leads to DELIVERY SERVICE leads to MYSQL">
+            <div class="arch-node">NEXT.JS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">API GATEWAY</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">AUTH SERVICE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">MENU SERVICE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">ORDER SERVICE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DELIVERY SERVICE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">MYSQL</div>
+          </div>
+          <p class="arch-note">Each service owns its own MySQL schema; the gateway is the single entry point the Next.js frontend talks to.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">004 / 007</div>
+          <span class="project-tag mono">ERP / Enterprise Software</span>
+          <div class="project-award mono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z"/></svg>BEST PROJECT AWARD</div>
+          <h3 class="project-title">TechSpace</h3>
+          <div class="project-links">
+            <a class="btn btn-outline" href="https://github.com/SithilSemitha/techspace-backend-frontend" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+            <a class="btn btn-fill" href="/projects/techspace/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A large-scale apparel export management system covering raw material procurement, production, HR, finance, and international client sales — awarded Best Project of the Academic Year.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">PHP</span><span class="tech-chip mono">MySQL</span><span class="tech-chip mono">Apache</span><span class="tech-chip mono">Bootstrap</span><span class="tech-chip mono">JavaScript</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: BOOTSTRAP UI leads to PHP APPLICATION LAYER leads to APACHE leads to MYSQL">
+            <div class="arch-node">BOOTSTRAP UI</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">PHP APPLICATION LAYER</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">APACHE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">MYSQL</div>
+          </div>
+          <p class="arch-note">A modular PHP application layer with separate modules per business function — procurement, production, HR, finance, sales.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">005 / 007</div>
+          <span class="project-tag mono">LLM / Developer Tools</span>
+          
+          <h3 class="project-title">AI Code Assistant</h3>
+          <div class="project-links">
+            
+            <a class="btn btn-fill" href="/projects/ai-code-assistant/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A locally-run coding assistant built on Ollama, combining code understanding with context retrieval to give AI-assisted suggestions without sending code to a third party.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">Ollama</span><span class="tech-chip mono">Local LLM</span><span class="tech-chip mono">Context Retrieval</span><span class="tech-chip mono">Python</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: CODEBASE leads to CONTEXT RETRIEVAL leads to LOCAL LLM (OLLAMA) leads to SUGGESTIONS / EXPLANATIONS">
+            <div class="arch-node">CODEBASE</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">CONTEXT RETRIEVAL</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">LOCAL LLM (OLLAMA)</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">SUGGESTIONS / EXPLANATIONS</div>
+          </div>
+          <p class="arch-note">Runs entirely against a locally-hosted model — no code leaves the machine.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">006 / 007</div>
+          <span class="project-tag mono">Generative AI / RAG</span>
+          
+          <h3 class="project-title">Board Meeting AI</h3>
+          <div class="project-links">
+            
+            <a class="btn btn-fill" href="/projects/board-meeting-ai/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">RAG</span><span class="tech-chip mono">OCR</span><span class="tech-chip mono">Embeddings</span><span class="tech-chip mono">PostgreSQL</span><span class="tech-chip mono">LLMs</span><span class="tech-chip mono">Voice Interaction</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: BOARD PAPERS leads to PDF / OCR leads to DOCUMENT PROCESSING leads to EMBEDDINGS leads to DATABASE SEARCH leads to LLM leads to TEXT / VOICE">
+            <div class="arch-node">BOARD PAPERS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">PDF / OCR</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DOCUMENT PROCESSING</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">EMBEDDINGS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DATABASE SEARCH</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">LLM</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">TEXT / VOICE</div>
+          </div>
+          <p class="arch-note">PostgreSQL stores both structured metadata and vector embeddings used for retrieval before generation.</p>
+        </div>
+      </article><article class="project-case reveal">
+        <div class="project-meta-col">
+          <div class="project-number mono">007 / 007</div>
+          <span class="project-tag mono">Algorithms / Optimization</span>
+          
+          <h3 class="project-title">AgriFleet</h3>
+          <div class="project-links">
+            <a class="btn btn-outline" href="https://github.com/SithilSemitha/agrifleet-backend-core-service" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+            <a class="btn btn-fill" href="/projects/agrifleet/">Case Study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="project-body">
+          <p>A route-optimization system for farm fleet logistics comparing exact and heuristic approaches — Held-Karp, Nearest Neighbor, and a Genetic Algorithm with weighted farm selection.</p>
+          <div class="project-tech">
+            <span class="tech-chip mono">Held-Karp</span><span class="tech-chip mono">Nearest Neighbor</span><span class="tech-chip mono">Genetic Algorithm</span><span class="tech-chip mono">Python</span>
+          </div>
+          <div class="arch-diagram" role="img" aria-label="Architecture: FARM LOCATIONS + WEIGHTS leads to DISTANCE MATRIX leads to HELD-KARP / NEAREST NEIGHBOR / GENETIC ALGORITHM leads to OPTIMIZED ROUTE">
+            <div class="arch-node">FARM LOCATIONS + WEIGHTS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DISTANCE MATRIX</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">HELD-KARP / NEAREST NEIGHBOR / GENETIC ALGORITHM</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">OPTIMIZED ROUTE</div>
+          </div>
+          <p class="arch-note">Held-Karp gives an exact baseline for small fleets; the Genetic Algorithm scales to larger ones where exact solving becomes infeasible.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+<section class="section" id="experience">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">06 / EXPERIENCE</p>
+        <h2 class="section-title">WHERE I'VE <em>WORKED.</em></h2>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-head">
+            <div>
+              <div class="timeline-role">AI Engineer Intern</div>
+              <div class="timeline-org">Sampath IT Solutions</div>
+            </div>
+            <div class="timeline-meta">JULY 2026 — PRESENT<br />HYBRID</div>
+          </div>
+          <ul class="timeline-points">
+            <li>Exploring local and private LLM deployment for enterprise use cases.</li><li>Building RAG-based document intelligence workflows.</li><li>Prototyping AI assistants for internal enterprise tooling.</li><li>Researching AI architecture patterns for LLM-based applications.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="leadership">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">07 / LEADERSHIP</p>
+        <h2 class="section-title">BEYOND <em>THE CODE.</em></h2>
+      </div>
+      <div class="leader-grid">
+        <div class="leader-card reveal ">
+          <strong>AIESEC</strong>
+          <p>Team leadership, B2C digital outreach, external PR, student engagement, team coordination.</p>
+        </div><div class="leader-card reveal reveal-d1">
+          <strong>IEEE</strong>
+          <p>Technical community involvement — events and engineering activities.</p>
+        </div><div class="leader-card reveal reveal-d2">
+          <strong>AWS Club</strong>
+          <p>Technical community volunteering around cloud and emerging technology.</p>
+        </div><div class="leader-card reveal reveal-d0">
+          <strong>Rotaract</strong>
+          <p>Community involvement, collaboration, and leadership.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section philosophy" aria-label="Engineering philosophy">
+    <div class="container">
+      <h2 class="philosophy-title reveal">
+        <span>BUILD.</span><span>BREAK.</span><span>UNDERSTAND.</span><span>REBUILD.</span>
+      </h2>
+      <p class="reveal reveal-d1">I learn by building real systems, understanding how they work, finding where they fail, and improving them.</p>
+    </div>
+  </section>
+<section class="section" aria-label="Currently exploring">
+    <div class="container">
+      <div class="explore-panel reveal">
+        <div>
+          <p class="eyebrow" style="margin-bottom:1.2rem;">CURRENTLY EXPLORING</p>
+          <div class="explore-tags">
+            <span class="explore-tag">LOCAL LLMs</span><span class="explore-tag">RAG</span><span class="explore-tag">AI AGENTS</span><span class="explore-tag">MCP</span><span class="explore-tag">GENERATIVE AI</span><span class="explore-tag">AI ENGINEERING</span><span class="explore-tag">CLOUD</span><span class="explore-tag">DEVOPS</span>
+          </div>
+        </div>
+        <div class="explore-status">
+          <span class="lbl">STATUS</span>
+          <span class="val"><span class="status-dot" aria-hidden="true"></span>ACTIVE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="code">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">08 / CODE</p>
+        <h2 class="section-title">THE CODE<br />IS <em>OUT THERE.</em></h2>
+      </div>
+      <div class="gh-panel reveal" id="ghPanel" data-github-user="SithilSemitha">
+        <div class="gh-head">
+          <div class="gh-user mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg> <span>@SithilSemitha</span></div>
+          <div class="gh-stats" id="ghStats">
+            <div><b id="ghRepoCount">—</b>REPOS</div>
+            <div><b id="ghStarCount">—</b>STARS</div>
+            <div><b id="ghFollowers">—</b>FOLLOWERS</div>
+          </div>
+          <a class="btn btn-outline" href="https://github.com/SithilSemitha" target="_blank" rel="noopener">View Source <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="gh-repos" id="ghRepos">
+          <div class="gh-skeleton"></div>
+          <div class="gh-skeleton"></div>
+          <div class="gh-skeleton"></div>
+          <div class="gh-skeleton"></div>
+        </div>
+        <noscript>
+          <p class="gh-fallback">Enable JavaScript to load live repository data, or visit <a style="color:var(--lime)" href="https://github.com/SithilSemitha">github.com/SithilSemitha</a> directly.</p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+<section class="section" id="contact" style="border-bottom:none;">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="reveal">
+          <p class="eyebrow">09 / CONTACT</p>
+          <h2 class="contact-title">LET'S BUILD<br /><em>SOMETHING.</em></h2>
+          <div class="contact-text">
+            <p>Open to software engineering, full-stack development, AI engineering opportunities, collaborations, and interesting projects.</p>
+          </div>
+          <div class="contact-cta">
+            <a class="btn btn-fill" href="mailto:sithilsemithad@gmail.com">Email Me <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn btn-outline" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">LinkedIn <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="contact-links reveal reveal-d1">
+          <a class="contact-link" href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg><span>Download CV</span><span class="arrow mono">→</span></a>
+          <a class="contact-link" href="mailto:sithilsemithad@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg><span>sithilsemithad@gmail.com</span><span class="arrow mono">→</span></a>
+          <a class="contact-link" href="https://github.com/SithilSemitha" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span>github.com/SithilSemitha</span><span class="arrow mono">→</span></a>
+          <a class="contact-link" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8h4v1.5A5.98 5.98 0 0 1 16 8Z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg><span>linkedin.com/in/sithil-semitha</span><span class="arrow mono">→</span></a>
+          <a class="contact-link" href="https://www.instagram.com/semithaaaaa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>@semithaaaaa</span><span class="arrow mono">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">SITHIL<span>.ME</span></div>
+        <p class="footer-roles">Software Engineer · AI Engineer · Full-Stack Developer · CS Undergraduate</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/SithilSemitha" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:sithilsemithad@gmail.com">Email</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sithil Semitha</span>
+      <span class="footer-status"><span class="status-dot" aria-hidden="true"></span>SYSTEM STATUS: ONLINE</span>
+    </div>
+  </footer>
+<script src="/assets/js/main.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Board Meeting AI — Sithil Semitha</title>
+    <meta name="description" content="A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice." />
+    <link rel="canonical" href="https://www.sithil.me/projects/board-meeting-ai/" />
+    <meta name="theme-color" content="#050505" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Applied before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          if (saved === "light" || saved === "dark") {
+            document.documentElement.setAttribute("data-theme", saved);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Board Meeting AI — Sithil Semitha" />
+    <meta property="og:description" content="A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice." />
+    <meta property="og:url" content="https://www.sithil.me/projects/board-meeting-ai/" />
+    <meta property="og:image" content="https://www.sithil.me/assets/img/profile.png" />
+    <meta property="og:site_name" content="Sithil Semitha" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Board Meeting AI — Sithil Semitha" />
+    <meta name="twitter:description" content="A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice." />
+    <meta name="twitter:image" content="https://www.sithil.me/assets/img/profile.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"Board Meeting AI","description":"A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice.","creator":{"@type":"Person","name":"Sithil Semitha"},"keywords":"RAG, OCR, Embeddings, PostgreSQL, LLMs, Voice Interaction"}</script>
+  </head>
+<body class="has-custom-cursor is-loading">
+<noscript><style>#preloader{display:none!important;}</style></noscript>
+  <div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Loading">
+    <span class="preloader-marker preloader-marker-tl mono" aria-hidden="true">SYS/BOOT</span>
+    <span class="preloader-marker preloader-marker-br mono" aria-hidden="true" id="preloaderPercent">0%</span>
+    <div class="preloader-inner">
+      <div class="preloader-logo mono">SITHIL<span>.ME</span></div>
+      <div class="preloader-bar"><div class="preloader-bar-fill" id="preloaderFill"></div></div>
+      <div class="preloader-status mono" id="preloaderStatus">INITIALIZING SYSTEM<span class="term-cursor" aria-hidden="true"></span></div>
+    </div>
+  </div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="backdrop" aria-hidden="true"></div><div class="noise" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+  <nav class="nav" aria-label="Primary">
+    <a href="/#home" class="nav-logo">SITHIL<span>.ME</span></a>
+    <ul class="nav-links">
+      <li><a href="/#work" data-num="05">Work</a></li><li><a href="/#about" data-num="01">About</a></li><li><a href="/#stack" data-num="04">Stack</a></li><li><a href="/#experience" data-num="06">Experience</a></li><li><a href="/#certifications" data-num="03">Certs</a></li><li><a href="/#contact" data-num="09">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="status-pill"><span class="status-dot" aria-hidden="true"></span>AVAILABLE FOR OPPORTUNITIES</div>
+      <a class="nav-cv-desktop mono" href="https://drive.google.com/file/d/1cw33L8wD7ilVOyOfU1Ku9ABpu2unPpqk/view?usp=sharing" target="_blank" rel="noopener" style="font-size:.72rem;letter-spacing:.08em;color:var(--text-1);display:flex;align-items:center;gap:.4rem;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>CV</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Switch to light theme">
+        <span class="icon-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a8.5 8.5 0 1 1-9-11 7 7 0 0 0 9 11Z"/></svg></span><span class="icon-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <nav aria-label="Mobile">
+      <a href="/#work"><span>05</span>Work</a><a href="/#about"><span>01</span>About</a><a href="/#stack"><span>04</span>Stack</a><a href="/#experience"><span>06</span>Experience</a><a href="/#certifications"><span>03</span>Certs</a><a href="/#contact"><span>09</span>Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a class="btn btn-outline" href="https://github.com/SithilSemitha" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-outline" href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn btn-fill" href="mailto:sithilsemithad@gmail.com">Email</a>
+    </div>
+  </div>
+<main id="main">
+<article><div class="case-hero">
+    <a class="case-back mono" href="/#work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>BACK TO WORK</a>
+    <p class="eyebrow">006 / SELECTED WORK</p>
+    <h1 class="case-title">Board Meeting AI</h1>
+    
+    <p class="case-summary">A retrieval-augmented assistant for board papers — OCR and document processing feed embeddings into a searchable store, so users can query meeting documents by text or voice.</p>
+    <dl class="case-meta-row">
+      <div><dt>Category</dt><dd>Generative AI / RAG</dd></div>
+      <div><dt>Stack</dt><dd>RAG, OCR, Embeddings, PostgreSQL, LLMs, Voice Interaction</dd></div>
+      <div><dt>Repository</dt><dd>Private</dd></div>
+    </dl>
+  </div>
+  <div class="case-body">
+    <nav class="case-toc" aria-label="Case study sections">
+      <a href="#problem">Problem</a><a href="#objective">Objective</a><a href="#architecture">Architecture</a><a href="#stack">Technology</a><a href="#implementation">Implementation</a><a href="#challenges">Challenges</a><a href="#result">Result</a><a href="#learned">What I Learned</a>
+    </nav>
+    <div>
+      <div class="case-section" id="problem">
+        <h2>Problem</h2>
+        <p>Board papers and meeting transcripts pile up as scanned PDFs that are slow to search manually when someone needs a specific decision or figure.</p>
+      </div>
+      <div class="case-section" id="objective">
+        <h2>Objective</h2>
+        <p>Let users ask natural-language questions about board documents and meeting history and get grounded answers with sources.</p>
+      </div>
+      <div class="case-section" id="architecture">
+        <h2>Architecture</h2>
+        <div class="arch-diagram" role="img" aria-label="Architecture: BOARD PAPERS leads to PDF / OCR leads to DOCUMENT PROCESSING leads to EMBEDDINGS leads to DATABASE SEARCH leads to LLM leads to TEXT / VOICE">
+          <div class="arch-node">BOARD PAPERS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">PDF / OCR</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DOCUMENT PROCESSING</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">EMBEDDINGS</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">DATABASE SEARCH</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">LLM</div><div class="arch-arrow" aria-hidden="true">↓</div><div class="arch-node">TEXT / VOICE</div>
+        </div>
+        <p class="arch-note">PostgreSQL stores both structured metadata and vector embeddings used for retrieval before generation.</p>
+      </div>
+      <div class="case-section" id="stack">
+        <h2>Technology</h2>
+        <div class="project-tech">
+          <span class="tech-chip mono">RAG</span><span class="tech-chip mono">OCR</span><span class="tech-chip mono">Embeddings</span><span class="tech-chip mono">PostgreSQL</span><span class="tech-chip mono">LLMs</span><span class="tech-chip mono">Voice Interaction</span>
+        </div>
+      </div>
+      <div class="case-section" id="implementation">
+        <h2>Implementation</h2>
+        <p>Incoming board papers go through OCR and document processing, are chunked and embedded, and stored in PostgreSQL alongside metadata. Queries retrieve the most relevant chunks before an LLM generates a grounded answer, deliverable as text or voice.</p>
+      </div>
+      <div class="case-section" id="challenges">
+        <h2>Challenges</h2>
+        <p>OCR quality on scanned board documents varies a lot — cleaning and chunking strategy had a bigger impact on answer quality than the choice of LLM.</p>
+      </div>
+      <div class="case-section" id="result">
+        <h2>Result</h2>
+        <p>A working RAG pipeline that turns a folder of scanned board papers into a queryable knowledge base.</p>
+      </div>
+      <div class="case-section" id="learned">
+        <h2>What I Learned</h2>
+        <p>How much retrieval-pipeline quality (OCR, chunking, embedding strategy) determines RAG output quality, more than model choice.</p>
+      </div>
+
+      <div class="case-nav-links mono">
+        <a href="/projects/ai-code-assistant/">← AI Code Assistant</a>
+        <a href="/projects/agrifleet/">AgriFleet →</a>
+      </div>
+    </div>
+  </div></article>
+</main>
+<footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">SITHIL<span>.ME</span></div>
+        <p class="footer-roles">Software Engineer · AI Engineer · Full-Stack Developer · CS Undergraduate</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/SithilSemitha" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/sithil-semitha/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:sithilsemithad@gmail.com">Email</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sithil Semitha</span>
+      <span class="footer-status"><span class="status-dot" aria-hidden="true"></span>SYSTEM STATUS: ONLINE</span>
+    </div>
+  </footer>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>
